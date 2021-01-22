@@ -44,7 +44,7 @@ var graphGroup = svg.append("g")
 /// function for updating x scale variable
 function updateXScale(xData,curXAxis){
     var xLineraScale = d3.scaleLinear()
-        .domain(d3.min(xData, d=> d[curXAxis]),d3.max(xData, d=> d[curXAxis]))
+        .domain([d3.min(xData, d=> d[curXAxis]),d3.max(xData, d=> d[curXAxis])])
         .range([0,chartWidth]);
     return xLineraScale;      
 
@@ -53,7 +53,7 @@ function updateXScale(xData,curXAxis){
 /// fucntion for updating y scale variable
 function updateYScale(yData,curYaxis){
     var yLinearScale = d3.scaleLinear()
-        .domain(d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis]))
+        .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
         .range([0,chartWidth]);  
     return yLinearScale;
 }
@@ -125,7 +125,7 @@ d3.csv("assets/data/data.csv").then(function(data){
     var yAxisG=graphGroup.append("g")///// not sure if i should set this as a variable yet
         .classed('y-axis',true)
         .call(leftAxis);
-    console.log(typeof yAxisG);
+ 
 
     //// appending x axis 
     var xAxisG=graphGroup.append("g") ///// not sure if i should set this as a variable yet
@@ -151,8 +151,8 @@ d3.csv("assets/data/data.csv").then(function(data){
     console.log("xLinearScale");
     console.log(xLinearScale);
     console.log("----------------");
-    console.log("xLinearScale");
-    console.log(xLinearScale);
+    console.log("yLinearScale");
+    console.log(yLinearScale);
 
 
 
