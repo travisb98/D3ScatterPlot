@@ -81,7 +81,7 @@ function makeYAx(yScale,yAxis){
 
 //// funciton that appends circle to the graph, might need to change this so the circles can be updated, maybe use the .exit().remove() functions
 function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
-    graphGroup.selectAll('circle')
+    var circlesGroup=graphGroup.selectAll('circle')
     .data(data)
     .enter()
     .append("circle")
@@ -91,9 +91,41 @@ function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
     .attr("fill", "pink")
     .attr("opacity", ".75");
 
+    return circlesGroup;
+
 }
 
 
+//// function used for updating circles with new tooltip
+function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
+
+    var xLabel = chosenXAxis;
+    var yLabel = chosenYAxis;
+
+
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function(d) {
+        return (`x axis:${d[chosenXAxis]}<br> y axis:${d[chosenYAxis]}`);
+    });
+
+    circlesGroup.call(toolTip);
+
+    circlesGroup.on("mouseover", function(data) {
+      toolTip.show(data);
+    })
+      // onmouseout event
+      .on("mouseout", function(data) {
+        toolTip.hide(data);
+      });
+  
+    return circlesGroup;
+
+
+
+
+}
 
 
 d3.csv("assets/data/data.csv").then(function(data){
@@ -135,7 +167,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         .call(bottomAxis);
 
     // use the appCircle function to append the inital circles to the graph
-    appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
+    var circlesGroup = appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
 
 
     // Create group for x-axis labels
@@ -201,8 +233,21 @@ d3.csv("assets/data/data.csv").then(function(data){
     
 
 
+    /// update ToolTip function above csv import
+    var circlesGroup=updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
 
 
+    /// event listener for x axis
+    
+
+
+
+
+
+    /// event listener for y axis
+
+
+    
 
 
 
