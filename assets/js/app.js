@@ -23,7 +23,7 @@ var chartWidth = svgWidth - margin.left - margin.right;
 
 var chosenXAxis = "poverty";
 
-var chsenYAxis = "obesity";
+var chosenYAxis = "obesity";
 
 // create svg wrapper, append svg and set the width and height
 var svg=d3
@@ -70,7 +70,7 @@ function makeXAx(xScale,xAxis){
     return xAxis;
 }
 
-// function for updating the y axis
+// function for updating the y axis when clicked
 function makeYAx(yScale,yAxis){
     var leftAx = d3.axisLeft(yScale);
         yAxis.transition()
@@ -108,10 +108,21 @@ d3.csv("assets/data/data.csv").then(function(data){
 
     //// use the function updateXScale function to define xLinearScale
     var xLinearScale=updateXScale(data,chosenXAxis);
+    //// use the function updateXScale function to define yLinearScale
+    var yLinearScale=updateYScale(data,chosenYAxis);
 
-    var yLinearScale=updateYScale(data,chosenyAxis);
+    // Create initial axis functions
+    var bottomAxis  = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
 
+    var XAxis =graphGroup.append("g")
+        .classed("x-axis",true)
+        .attr("transform",`translate(0,${chartHeight})`)
+        .call(bottomAxis);
 
+    graphGroup.append("g").call(leftAxis);
+    
+    
 
 
 
