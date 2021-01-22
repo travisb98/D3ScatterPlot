@@ -115,15 +115,44 @@ d3.csv("assets/data/data.csv").then(function(data){
     var bottomAxis  = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
-    var XAxis =graphGroup.append("g")
-        .classed("x-axis",true)
-        .attr("transform",`translate(0,${chartHeight})`)
+    // var XAxis =graphGroup.append("g")
+    //     .classed("x-axis",true)
+    //     .attr("transform",`translate(0,${chartHeight})`)
+    //     .call(bottomAxis);
+
+
+    //// appending y axis
+    var yAxisG=graphGroup.append("g")///// not sure if i should set this as a variable yet
+        .classed('y-axis',true)
+        .call(leftAxis);
+    console.log(typeof yAxisG);
+
+    //// appending x axis 
+    var xAxisG=graphGroup.append("g") ///// not sure if i should set this as a variable yet
+        .classed('x-axis',true)
+        .attr('transform',`translate(0,${chartHeight})`)
         .call(bottomAxis);
 
-    graphGroup.append("g").call(leftAxis);
-    
+    graphGroup.selectAll('circle')
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", x => xLinearScale(x[chosenXAxis]))
+        .attr("cy", y => yLinearScale(y[chosenYAxis]))
+        .attr("r", 20)
+        .attr("fill", "pink")
+        .attr("opacity", ".5");
     
 
+
+    console.log("getting an error because these functions are returning NAN for one of the variables, need to go back an fix")
+    console.log("----------------");
+    console.log("----------------");
+    console.log("xLinearScale");
+    console.log(xLinearScale);
+    console.log("----------------");
+    console.log("xLinearScale");
+    console.log(xLinearScale);
 
 
 
