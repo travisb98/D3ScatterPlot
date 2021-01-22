@@ -54,7 +54,7 @@ function updateXScale(xData,curXAxis){
 function updateYScale(yData,curYaxis){
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
-        .range([0,chartWidth]);  
+        .range([chartHeight,0]);  
     return yLinearScale;
 }
 
@@ -79,18 +79,24 @@ function makeYAx(yScale,yAxis){
     return yAxis;
 }
 
+//// funciton that appends circle to the graph, might need to change this so the circles can be updated, maybe use the .exit().remove() functions
+function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
+    graphGroup.selectAll('circle')
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", x => xLinearScale(x[chosenXAxis]))
+    .attr("cy", y => yLinearScale(y[chosenYAxis]))
+    .attr("r", 20)
+    .attr("fill", "pink")
+    .attr("opacity", ".75");
 
-
+}
 
 
 
 
 d3.csv("assets/data/data.csv").then(function(data){
-
-    /// for now we're just opening the data and console logging it
-    // console.log(data);
-    // console.log(data.find(x => x.abbr == "AL"));
-
 
 
     /// parse data, turning it into float
@@ -115,11 +121,6 @@ d3.csv("assets/data/data.csv").then(function(data){
     var bottomAxis  = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
-    // var XAxis =graphGroup.append("g")
-    //     .classed("x-axis",true)
-    //     .attr("transform",`translate(0,${chartHeight})`)
-    //     .call(bottomAxis);
-
 
     //// appending y axis
     var yAxisG=graphGroup.append("g")///// not sure if i should set this as a variable yet
@@ -133,40 +134,77 @@ d3.csv("assets/data/data.csv").then(function(data){
         .attr('transform',`translate(0,${chartHeight})`)
         .call(bottomAxis);
 
-    graphGroup.selectAll('circle')
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", x => xLinearScale(x[chosenXAxis]))
-        .attr("cy", y => yLinearScale(y[chosenYAxis]))
-        .attr("r", 20)
-        .attr("fill", "pink")
-        .attr("opacity", ".5");
+    // use the appCircle function to append the inital circles to the graph
+    appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
+
+
+    // Create group for x-axis labels
+    var xLabelsGroup = graphGroup.append("g")
+    .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+
+    /// x axis label for poverty
+    var xPovertyLabel=xLabelsGroup.append("text")
+        .attr("x",0)
+        .attr("y", 20)
+        .attr("value","poverty")
+        .classed("active",false)
+        .text("Poverty(%)");
+
+
+    // x axis lavel for age
+    var xAgeLabel=xLabelsGroup.append("text")
+        .attr("x",-100)
+        .attr("y", 20)
+        .attr("value","age")
+        .classed("inactive",true)
+        .text("Age(Median)");
+
+
+    // x axis label for income
+    var xIncomeLabel=xLabelsGroup.append("text")
+        .attr("x",150)
+        .attr("y", 20)
+        .attr("value","income")
+        .classed("inactive",true)
+        .text("Income (Median)");
+
+
+
+    //// creating the group for the y labels
+    var yLabelsGroup = graphGroup.append("g")
+        .attr("transform", "rotate(-90)");
+        
+    /// y axis label for obesity
+    var yObesityLabel = yLabelsGroup.append("text") 
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (chartHeight / 2))
+        .attr("dy", "1em")
+        .classed("active", true)
+        .text("Obesity(%)");
+
+    /// y axis label for smokes
+    var ySmokesLabel = yLabelsGroup.append("text") 
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (chartHeight / 2) + 150)
+        .attr("dy", "1em")
+        .classed("inactive", true)
+        .text("Smokes(%)");
+
+    /// y axis label for Healthcare
+    var yHealthcareLabel = yLabelsGroup.append("text") 
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (chartHeight / 2) - 150)
+        .attr("dy", "1em")
+        .classed("inactive", true)
+        .text("Healthcare");
+
     
 
 
-    console.log("getting an error because these functions are returning NAN for one of the variables, need to go back an fix")
-    console.log("----------------");
-    console.log("----------------");
-    console.log("xLinearScale");
-    console.log(xLinearScale);
-    console.log("----------------");
-    console.log("yLinearScale");
-    console.log(yLinearScale);
 
 
 
 
-    // // append x axis
-    // var xAxis = graphGroup.append("g")
-    // .classed("x-axis", true)
-    // .attr("transform", `translate(0, ${chartHeight})`)
-    // .call(bottomAxis);
-
-
-    // var chosenXAxis = "age";
-
-    // var xLinearScale=updateXScale(data,chosenXAxis);
 
 
 
