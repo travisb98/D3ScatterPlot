@@ -64,16 +64,14 @@ function updateYScale(yData,curYaxis){
 // function for updating xAxis when click
 function makeXAx(xScale,xAxis){
     var bottomAx = d3.axisBottom(xScale);
-    xAxis.transition()
-        .duration(1000)
-        .call(bottomAx);
+    xAxis.transition().duration(1000).call(bottomAx);
     return xAxis;
 }
 
 // function for updating the y axis when clicked
 function makeYAx(yScale,yAxis){
     var leftAx = d3.axisLeft(yScale);
-        yAxis.transition()
+    yAxis.transition()
         .duration(1000)
         .call(leftAx);
     return yAxis;
@@ -237,14 +235,126 @@ d3.csv("assets/data/data.csv").then(function(data){
     var circlesGroup=updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
 
 
-    /// event listener for x axis
-    
-
-
-
-
 
     /// event listener for y axis
+    yLabelsGroup.selectAll("text").on('click',function(){
+        // grabs the value that was selected
+        var selectedVal = d3.select(this).attr('value');
+        // if a new value was selected
+        if (selectedVal!==chosenXAxis){
+            //redefines the chosen y axis
+            chosenYAxis = selectedVal;
+
+            //// use the function updateXScale function to define xLinearScale
+            var yLinearScale=updateYScale(data,chosenYAxis);
+
+            /// updates x  axis with transition
+            var yAxis=makeYAx(yLinearScale,yAxisG);
+
+            /// removes the circles
+            d3.selectAll("circle").remove();
+            
+            //// updates circles with new values
+            circlesGroup = appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
+
+            //// updates tooltips
+            circlesGroup = updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
+
+            if (chosenYAxis == 'obesity'){
+                yObesityLabel.classed("active", true).classed("inactive", false);
+                ySmokesLabel.classed("active", false).classed("inactive", true);
+                yHealthcareLabel.classed("active", false).classed("inactive", true);
+            }
+            else if (chosenYAxis == 'smokes'){
+                yObesityLabel.classed("active", false).classed("inactive", true);  
+                ySmokesLabel.classed("active", true).classed("inactive", false);
+                yHealthcareLabel.classed("active", false).classed("inactive", true);                
+            }
+            else if (chosenYAxis == 'healthcare') {
+                yObesityLabel.classed("active", false).classed("inactive", true);  
+                ySmokesLabel.classed("active", false).classed("inactive", true);  
+                yHealthcareLabel.classed("active", true).classed("inactive", false);  
+            }
+
+
+
+
+
+
+
+        };
+
+
+
+
+
+
+    });
+
+
+
+
+    /// event listener for x axis
+    xLabelsGroup.selectAll("text").on('click',function(){
+        // alert("you clicked the x axis");
+
+
+        // grabs the value that was selected
+        var selectedVal = d3.select(this).attr('value');
+        /// if this is a new selection
+        if (selectedVal!==chosenXAxis){
+            // redefine the chosenXAxis variable
+            chosenXAxis = selectedVal;
+            // alert('you made a new selection');
+
+
+            //// use the function updateXScale function to define xLinearScale
+            var xLinearScale=updateXScale(data,chosenXAxis);
+
+
+            /// updates x  axis with transition
+            var xAxis=makeXAx(xLinearScale,xAxisG);
+
+            /// removes the circles
+            d3.selectAll("circle").remove();
+
+            //// updates circles with new values
+            circlesGroup = appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
+            
+            //// updates tooltips
+            circlesGroup = updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
+
+            if (chosenXAxis == 'poverty'){
+                xPovertyLabel.classed("active", true).classed("inactive", false);
+                xAgeLabel.classed("active", false).classed("inactive", true);
+                xIncomeLabel.classed("active", false).classed("inactive", true);
+            }
+            else if (chosenXAxis == 'age'){
+                xPovertyLabel.classed("active", false).classed("inactive", true);  
+                xAgeLabel.classed("active", true).classed("inactive", false);
+                xIncomeLabel.classed("active", false).classed("inactive", true);                
+            }
+            else{
+                xPovertyLabel.classed("active", false).classed("inactive", true);  
+                xAgeLabel.classed("active", false).classed("inactive", true);  
+                xIncomeLabel.classed("active", true).classed("inactive", false);  
+            }
+
+
+
+
+
+
+        };
+
+
+    });
+
+
+
+
+
+    
 
 
     
@@ -254,4 +364,9 @@ d3.csv("assets/data/data.csv").then(function(data){
 
 
 
-});
+}).catch(function(error) {
+    console.log(error);
+  });
+
+
+
