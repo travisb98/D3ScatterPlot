@@ -52,9 +52,15 @@ function updateXScale(xData,curXAxis){
 
 /// fucntion for updating y scale variable
 function updateYScale(yData,curYaxis){
+    // var yLinearScale = d3.scaleLinear()
+    //     .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
+    //     .range([chartHeight,0]);
+
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
-        .range([chartHeight,0]);  
+        .range([0,chartHeight]);
+        
+        
     return yLinearScale;
 }
 
@@ -96,10 +102,6 @@ function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
 //// function used for updating circles with new tooltip
 function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
 
-    var xLabel = chosenXAxis;
-    var yLabel = chosenYAxis;
-
-
     var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
@@ -123,7 +125,6 @@ function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
 
 
 d3.csv("assets/data/data.csv").then(function(data){
-
 
     /// parse data, turning it into float
     data.forEach(function(rowdata){
@@ -201,8 +202,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         .attr("transform", "rotate(-90)");
     
 
-    console.log(xLabelsGroup); 
-    console.log(yLabelsGroup);
+
     /// y axis label for obesity
     var yObesityLabel = yLabelsGroup.append("text") 
         .attr("y", 0 - margin.left)
