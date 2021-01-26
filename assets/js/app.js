@@ -52,13 +52,13 @@ function updateXScale(xData,curXAxis){
 
 /// fucntion for updating y scale variable
 function updateYScale(yData,curYaxis){
-    // var yLinearScale = d3.scaleLinear()
-    //     .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
-    //     .range([chartHeight,0]);
-
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
-        .range([0,chartHeight]);
+        .range([chartHeight,0]);
+
+    // var yLinearScale = d3.scaleLinear()
+    //     .domain([d3.min(yData, d=> d[curYaxis]),d3.max(yData, d=> d[curYaxis])])
+    //     .range([0,chartHeight]);
         
         
     return yLinearScale;
@@ -150,13 +150,13 @@ d3.csv("assets/data/data.csv").then(function(data){
 
 
     //// appending y axis
-    var yAxisG=graphGroup.append("g")///// not sure if i should set this as a variable yet
+    var yAxisG=graphGroup.append("g")
         .classed('y-axis',true)
         .call(leftAxis);
  
 
     //// appending x axis 
-    var xAxisG=graphGroup.append("g") ///// not sure if i should set this as a variable yet
+    var xAxisG=graphGroup.append("g") 
         .classed('x-axis',true)
         .attr('transform',`translate(0,${chartHeight})`)
         .call(bottomAxis);
@@ -250,12 +250,17 @@ d3.csv("assets/data/data.csv").then(function(data){
             //redefines the chosen y axis
             chosenYAxis = selectedVal;
 
+            //// use the function updatexScale function to define xLinearScale
+            var xLinearScale=updateXScale(data,chosenXAxis);
             
-            //// use the function updateXScale function to define xLinearScale
+            //// use the function updateYScale function to define yLinearScale
             var yLinearScale=updateYScale(data,chosenYAxis);
 
+            /// updates y axis with transistion
+            var yAxis=makeYAx(yLinearScale,yAxisG)
+
             /// updates x  axis with transition
-            var yAxis=makeYAx(yLinearScale,yAxisG);
+            var xAxis=makeXAx(xLinearScale,xAxisG);
 
             /// removes the circles
             d3.selectAll("circle").remove();
@@ -266,6 +271,8 @@ d3.csv("assets/data/data.csv").then(function(data){
             //// updates tooltips
             circlesGroup = updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
 
+
+            /// if statement that make the selected item  bold
             if (chosenYAxis == 'obesity'){
                 yObesityLabel.classed("active", true).classed("inactive", false);
                 ySmokesLabel.classed("active", false).classed("inactive", true);
@@ -316,9 +323,14 @@ d3.csv("assets/data/data.csv").then(function(data){
             // alert('you made a new selection');
 
 
-            //// use the function updateXScale function to define xLinearScale
+            //// use the function updatexScale function to define xLinearScale
             var xLinearScale=updateXScale(data,chosenXAxis);
+            
+            //// use the function updateYScale function to define yLinearScale
+            var yLinearScale=updateYScale(data,chosenYAxis);
 
+            /// updates y axis with transistion
+            var yAxis=makeYAx(yLinearScale,yAxisG)
 
             /// updates x  axis with transition
             var xAxis=makeXAx(xLinearScale,xAxisG);
@@ -342,7 +354,7 @@ d3.csv("assets/data/data.csv").then(function(data){
                 xAgeLabel.classed("active", true).classed("inactive", false);
                 xIncomeLabel.classed("active", false).classed("inactive", true);                
             }
-            else{
+            else if (chosenXAxis =='income'){
                 xPovertyLabel.classed("active", false).classed("inactive", true);  
                 xAgeLabel.classed("active", false).classed("inactive", true);  
                 xIncomeLabel.classed("active", true).classed("inactive", false);  
