@@ -95,6 +95,16 @@ function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
     .attr("fill", "pink")
     .attr("opacity", ".75");
 
+    graphGroup.selectAll(null)
+        .data(data)
+        .enter()
+        .append("text")
+        .attr('x', x => xLinearScale(x[chosenXAxis]-.05))
+        .attr('y', y => yLinearScale(y[chosenYAxis]-.08))
+        .classed("dot_label",true)
+        .text(d => d.abbr);
+        
+
     return circlesGroup;
 }
 
@@ -102,11 +112,13 @@ function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
 //// function used for updating circles with new tooltip
 function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
 
+
+
     var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
         .html(function(d) {
-        return (`x axis:${d[chosenXAxis]}<br> y axis:${d[chosenYAxis]}`);
+        return (`<h2>${d.state}</h2> <br> ${chosenXAxis}:${d[chosenXAxis]} <br> ${chosenYAxis}:${d[chosenYAxis]}`);
     });
 
     circlesGroup.call(toolTip);
@@ -125,7 +137,7 @@ function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
 
 
 d3.csv("assets/data/data.csv").then(function(data){
-
+    console.log(data);
     /// parse data, turning it into float
     data.forEach(function(rowdata){
 
@@ -264,6 +276,15 @@ d3.csv("assets/data/data.csv").then(function(data){
 
             /// removes the circles
             d3.selectAll("circle").remove();
+
+ 
+
+            ////removes the dot labels
+            d3.selectAll(".dot_label").remove();
+
+
+
+
             
             //// updates circles with new values
             circlesGroup = appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
@@ -337,6 +358,9 @@ d3.csv("assets/data/data.csv").then(function(data){
 
             /// removes the circles
             d3.selectAll("circle").remove();
+
+            ////removes the dot labels
+            d3.selectAll(".dot_label").remove();
 
             //// updates circles with new values
             circlesGroup = appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale);
