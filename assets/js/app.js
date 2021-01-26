@@ -90,7 +90,6 @@ function appCircle(data,chosenXAxis,chosenYAxis,xLinearScale,yLinearScale){
     .attr("opacity", ".75");
 
     return circlesGroup;
-
 }
 
 
@@ -119,9 +118,6 @@ function updateToolTip(chosenXAxis,chosenYAxis,circlesGroup){
       });
   
     return circlesGroup;
-
-
-
 
 }
 
@@ -170,7 +166,7 @@ d3.csv("assets/data/data.csv").then(function(data){
 
     // Create group for x-axis labels
     var xLabelsGroup = graphGroup.append("g")
-    .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+        .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
 
     /// x axis label for poverty
     var xPovertyLabel=xLabelsGroup.append("text")
@@ -203,12 +199,16 @@ d3.csv("assets/data/data.csv").then(function(data){
     //// creating the group for the y labels
     var yLabelsGroup = graphGroup.append("g")
         .attr("transform", "rotate(-90)");
-        
+    
+
+    console.log(xLabelsGroup); 
+    console.log(yLabelsGroup);
     /// y axis label for obesity
     var yObesityLabel = yLabelsGroup.append("text") 
         .attr("y", 0 - margin.left)
         .attr("x", 0 - (chartHeight / 2))
         .attr("dy", "1em")
+        .attr("value","obesity")
         .classed("active", true)
         .text("Obesity(%)");
 
@@ -217,6 +217,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         .attr("y", 0 - margin.left)
         .attr("x", 0 - (chartHeight / 2) + 150)
         .attr("dy", "1em")
+        .attr("value","smokes")
         .classed("inactive", true)
         .text("Smokes(%)");
 
@@ -225,6 +226,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         .attr("y", 0 - margin.left)
         .attr("x", 0 - (chartHeight / 2) - 150)
         .attr("dy", "1em")
+        .attr('value','healthcare')
         .classed("inactive", true)
         .text("Healthcare");
 
@@ -233,18 +235,22 @@ d3.csv("assets/data/data.csv").then(function(data){
 
     /// update ToolTip function above csv import
     var circlesGroup=updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
-
-
+    
+    // console.log(yLabelsGroup);
 
     /// event listener for y axis
     yLabelsGroup.selectAll("text").on('click',function(){
         // grabs the value that was selected
+
         var selectedVal = d3.select(this).attr('value');
+
+        // console.log(d3.select(this));
         // if a new value was selected
-        if (selectedVal!==chosenXAxis){
+        if (selectedVal!==chosenYAxis){
             //redefines the chosen y axis
             chosenYAxis = selectedVal;
 
+            
             //// use the function updateXScale function to define xLinearScale
             var yLinearScale=updateYScale(data,chosenYAxis);
 
@@ -301,6 +307,8 @@ d3.csv("assets/data/data.csv").then(function(data){
 
         // grabs the value that was selected
         var selectedVal = d3.select(this).attr('value');
+
+        console.log(selectedVal);
         /// if this is a new selection
         if (selectedVal!==chosenXAxis){
             // redefine the chosenXAxis variable
